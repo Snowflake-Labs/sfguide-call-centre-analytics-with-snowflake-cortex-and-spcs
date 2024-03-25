@@ -1,0 +1,1 @@
+# sfguide-call-centre-analytics-with-snowflake-cortex-and-spcs
