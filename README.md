@@ -54,7 +54,7 @@ a. Run the following notebook to bring up the Whisper Container for transcribing
 
 (OR)
 
- b. If you don't want the Audio2text containers but load the raw conversation data into required table then run the below notebook:
+ b. If you don't want to create the Audio2text container but load the raw conversation data into required the raw table then run the below notebook:
  
   [audio2text_setup_onlyConversation](./audio2text/audio2text_setup_onlyConversation.ipynb)
 
