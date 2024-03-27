@@ -1,0 +1,8 @@
+matplotlib==3.7.2
+plotly== 5.18.0
+pyecharts==2.0.4
+streamlit-echarts==0.4.0
+python-dotenv
+streamlit
+snowflake-snowpark-python[pandas]
+streamlit_option_menu==0.3.6

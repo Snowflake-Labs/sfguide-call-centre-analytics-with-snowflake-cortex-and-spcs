@@ -1,0 +1,99 @@
+﻿instruction,output,source
+"CREATE TABLE STREAMLITAPPTABLE (
+            DATETIME DATE,
+            AUDIO_FILE_NAME VARCHAR(100),
+            DURATION FLOAT,
+            CALLTOACTION VARCHAR(16777216),
+            CLAIMNUMBER VARCHAR(16777216),
+            CUSTOMER VARCHAR(16777216),
+            INTENT VARCHAR(16777216),
+            ISSUE VARCHAR(16777216),
+            POLICYNUMBER VARCHAR(16777216),
+            PURPOSEOFCALL VARCHAR(16777216),
+            REPRESENTATIVE VARCHAR(16777216),
+            RESOLUTION VARCHAR(16777216),
+            RESPONSEMODE VARCHAR(16777216),
+            MODEOFUPDATE VARCHAR(16777216),
+            NEXTSTEPS VARCHAR(16777216),
+            CALLSENTIMENT VARCHAR(8),
+            FIRSTCALLRESOLUTION VARCHAR(3)
+        )  -- Using valid SQLite, answer the following questions for the tables provided above. -- sum of call duration week on week  ?
+
+","SELECT
+  TO_VARIANT(DATE_TRUNC('MONTH', DATE_TRUNC('WEEK', datetime)))::STRING AS month_start_date,
+  TO_VARIANT(EXTRACT(WEEK FROM datetime))::STRING AS week_number,
+  SUM(DURATION) AS monthly_weekly_call_duration
+FROM
+  StreamlitAppTable
+GROUP BY
+  month_start_date,
+  week_number
+ORDER BY
+  month_start_date, week_number",custom
+"CREATE TABLE STREAMLITAPPTABLE (
+            DATETIME DATE,
+            AUDIO_FILE_NAME VARCHAR(100),
+            DURATION FLOAT,
+            CALLTOACTION VARCHAR(16777216),
+            CLAIMNUMBER VARCHAR(16777216),
+            CUSTOMER VARCHAR(16777216),
+            INTENT VARCHAR(16777216),
+            ISSUE VARCHAR(16777216),
+            POLICYNUMBER VARCHAR(16777216),
+            PURPOSEOFCALL VARCHAR(16777216),
+            REPRESENTATIVE VARCHAR(16777216),
+            RESOLUTION VARCHAR(16777216),
+            RESPONSEMODE VARCHAR(16777216),
+            MODEOFUPDATE VARCHAR(16777216),
+            NEXTSTEPS VARCHAR(16777216),
+            CALLSENTIMENT VARCHAR(8),
+            FIRSTCALLRESOLUTION VARCHAR(3)
+        )  -- Using valid SQLite, answer the following questions for the tables provided above. -- Give me all audio for the claim CLM234567890"," select *
+ from STREAMLITAPPTABLE
+ where claimnumber ='CLM234567890'
+order by datetime desc",custom
+"CREATE TABLE STREAMLITAPPTABLE (
+            DATETIME DATE,
+            AUDIO_FILE_NAME VARCHAR(100),
+            DURATION FLOAT,
+            CALLTOACTION VARCHAR(16777216),
+            CLAIMNUMBER VARCHAR(16777216),
+            CUSTOMER VARCHAR(16777216),
+            INTENT VARCHAR(16777216),
+            ISSUE VARCHAR(16777216),
+            POLICYNUMBER VARCHAR(16777216),
+            PURPOSEOFCALL VARCHAR(16777216),
+            REPRESENTATIVE VARCHAR(16777216),
+            RESOLUTION VARCHAR(16777216),
+            RESPONSEMODE VARCHAR(16777216),
+            MODEOFUPDATE VARCHAR(16777216),
+            NEXTSTEPS VARCHAR(16777216),
+            CALLSENTIMENT VARCHAR(8),
+            FIRSTCALLRESOLUTION VARCHAR(3)
+        ) -- Using valid SQLite, answer the following questions for the tables provided above. -- what is the issue raised by customer for the claim number CLM234567890"," select issue, datetime
+ from STREAMLITAPPTABLE
+ where claimnumber ='CLM234567890'
+order by datetime desc",custom
+"CREATE TABLE STREAMLITAPPTABLE (
+            DATETIME DATE,
+            AUDIO_FILE_NAME VARCHAR(100),
+            DURATION FLOAT,
+            CALLTOACTION VARCHAR(16777216),
+            CLAIMNUMBER VARCHAR(16777216),
+            CUSTOMER VARCHAR(16777216),
+            INTENT VARCHAR(16777216),
+            ISSUE VARCHAR(16777216),
+            POLICYNUMBER VARCHAR(16777216),
+            PURPOSEOFCALL VARCHAR(16777216),
+            REPRESENTATIVE VARCHAR(16777216),
+            RESOLUTION VARCHAR(16777216),
+            RESPONSEMODE VARCHAR(16777216),
+            MODEOFUPDATE VARCHAR(16777216),
+            NEXTSTEPS VARCHAR(16777216),
+            CALLSENTIMENT VARCHAR(8),
+            FIRSTCALLRESOLUTION VARCHAR(3)
+        ) -- Using valid SQLite, answer the following questions for the tables provided above. -- What is the total call durations for all agents for last week","SELECT count(*) as Cnt,round(sum(duration)/60) as Call_Duration_Mins, representative,monthname(datetime) as Call_Month,week(datetime) as Call_Week
+FROM STREAMLITAPPTABLE
+WHERE datetime >= DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '7 DAY' AND
+      datetime < DATE_TRUNC('week', CURRENT_DATE)
+      group by representative,Call_Month,call_week",custom

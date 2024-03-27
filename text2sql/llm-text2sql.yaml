@@ -1,0 +1,26 @@
+spec:
+  container:  
+  - name: text2sql-container
+    image: sfseeurope-us-west-ccarrero-452.registry.snowflakecomputing.com/pr_llmdemo/public/images/audiollm:latest
+    volumeMounts: 
+    - name: llm-workspace
+      mountPath: /notebooks/llm-workspace
+    env:
+      SNOWFLAKE_MOUNTED_STAGE_PATH: /notebooks/llm-workspace
+    resources:                           
+        requests:
+          nvidia.com/gpu: 2
+        limits:
+          nvidia.com/gpu: 2
+  endpoint:
+  - name: llm-audio-ep
+    port: 8888
+    public: true
+  - name: api
+    port: 9000
+    public: true
+  volume:
+  - name: llm-workspace
+    source: "@llm_workspace"
+    uid: 0
+    gid: 0
