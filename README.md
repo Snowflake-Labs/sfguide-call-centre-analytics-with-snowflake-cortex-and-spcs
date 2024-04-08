@@ -1,4 +1,4 @@
-# sfguide-call-centre-analytics-with-snowflake-cortex-and-spcs
+# Call Centre Analytics with Snowflake Cortex LLM and Snowpark Container Services
 
 ## Overview
 
