@@ -5,5 +5,5 @@
     "database": "",
     "schema": "",
     "warehouse": "",
-    "compute_pool" : ""
+    "role":"SPCS_PSE_ROLE"
 }  

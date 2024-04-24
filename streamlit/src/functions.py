@@ -49,20 +49,18 @@ def get_agent_call_stats(s_date,e_date):
                 from Audio_Claims_Extracted_info datetime>= '{s_date}' and datetime<= '{e_date}'
     """
 def get_topic_info(s_date,e_date):
-        return f'''
+        return f''' 
                     select count(*) as value , topic as name
                     from
                     (
                     select 
-                                        
-                                        --call_stats:Intent::string as call_intent,
-                                        -- SNOWFLAKE.CORTEX.SUMMARIZE(raw_conversation) as summarize_call_summary,
-                                        SNOWFLAKE.CORTEX.COMPLETE(
-                                            'mistral-7b',
-                                                CONCAT('What is the top topic of the conversation in 2 words. Example Insurance Claim, Policy Claims', raw_conversation)
-                                        )   as topic                 
+                                    --    'Demo' as topic
+                                       SNOWFLAKE.CORTEX.COMPLETE(
+                                           'llama2-70b-chat',
+                                               CONCAT('What is the topic of the conversation in 2 words. Example Insurance Claim or Policy Claims. Do not  paraphase and do not include the prompt and the questions in the output also no summary included. Only output the answer', raw_conversation)
+                                       )   as topic                 
                                     from Audio_Claims_Extracted_info  where datetime>= '{s_date}' and datetime<= '{e_date}'
-                                    ) z group by name
+                                    ) z group by name;
 
                 '''
 def get_call_intent(s_date,e_date):

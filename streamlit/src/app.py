@@ -9,8 +9,9 @@ import time
 # import seaborn as sns
 # import plotly.express as px
 
-from snowflake.snowpark.session import Session
+from snowflake.snowpark import Session
 import snowflake.snowpark.functions as F
+import snowflake.connector
 
 
 # from streamlit_echarts import st_echarts
@@ -47,7 +48,7 @@ SNOWFLAKE_SCHEMA = os.getenv("SNOWFLAKE_SCHEMA")
 SNOWFLAKE_USER = os.getenv("SNOWFLAKE_USER")
 SNOWFLAKE_PASSWORD = os.getenv("SNOWFLAKE_PASSWORD")
 SNOWFLAKE_ROLE = os.getenv("SNOWFLAKE_ROLE")
-SNOWFLAKE_WAREHOUSE = os.getenv("SNOWFLAKE_WAREHOUSE")
+SNOWFLAKE_WAREHOUSE = os.getenv("SNOWFLAKE_WAREHOUSE","XS_WH")
 
 def get_login_token():
   """
@@ -58,36 +59,46 @@ def get_login_token():
     return f.read()
 
 def get_connection_params():
-  """
-  Construct Snowflake connection params from environment variables.
-  """
-  if os.path.exists("/snowflake/session/token"):
-    return {
-      "account": SNOWFLAKE_ACCOUNT,
-      "host": SNOWFLAKE_HOST,
-      "authenticator": "oauth",
-      "token": get_login_token(),
-      "warehouse": SNOWFLAKE_WAREHOUSE,
-      "database": SNOWFLAKE_DATABASE,
-      "schema": SNOWFLAKE_SCHEMA
-    }
-  else:
-    return {
-      "account": SNOWFLAKE_ACCOUNT,
-      "host": SNOWFLAKE_HOST,
-      "user": SNOWFLAKE_USER,
-      "password": SNOWFLAKE_PASSWORD,
-      "role": SNOWFLAKE_ROLE,
-      "warehouse": SNOWFLAKE_WAREHOUSE,
-      "database": SNOWFLAKE_DATABASE,
-      "schema": SNOWFLAKE_SCHEMA
-    }
 
+  """
+  Construct Snowflake connection params from environment variables. 
+  There is an issue using cortex LLM fuctions with oauth token within streamlit. Hence changed connection mode to reading from json
+  """
+  return json.load(open('./src/connection.json'))
+  # if os.path.isfile("/snowflake/session/token"):
+  #       creds = {
+  #           'host': os.getenv('SNOWFLAKE_HOST'),
+  #           'port': os.getenv('SNOWFLAKE_PORT'),
+  #           'protocol': "https",
+  #           'account': os.getenv('SNOWFLAKE_ACCOUNT'),
+  #           'authenticator': "oauth",
+  #           'token': open('/snowflake/session/token', 'r').read(),
+  #           'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
+  #           'database': os.getenv('SNOWFLAKE_DATABASE'),
+  #           'schema': os.getenv('SNOWFLAKE_SCHEMA'),
+  #           'client_session_keep_alive': True
+  #       }
+  # else:
+  #       creds = {
+  #           'account': os.getenv('SNOWFLAKE_ACCOUNT'),
+  #           'user': os.getenv('SNOWFLAKE_USER'),
+  #           'password': os.getenv('SNOWFLAKE_PASSWORD'),
+  #           'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
+  #           'database': os.getenv('SNOWFLAKE_DATABASE'),
+  #           'schema': os.getenv('SNOWFLAKE_SCHEMA'),
+  #           'client_session_keep_alive': True
+  #       }
+    
+    
+  # connection = snowflake.connector.connect(**creds)
+  # return connection
+    
 
 # connection_parameters = json.load(open('./src/connection.json'))
 
     # session = 
 if "snowpark_session" not in st.session_state:
+    # session = Session.builder.configs({"connection": get_connection_params()}).create()
     session = Session.builder.configs(get_connection_params()).create()
 
     # session = Session.builder.configs(connection_parameters).create()
@@ -130,7 +141,12 @@ if choose_side_opt == "About App":
   appinfo()
 
 if choose_side_opt == "Audio Analytics":
-  analytics_main(session=session)
+    
+    # snowflake_environment = session.sql('SELECT current_user(), current_version()').collect()
+    # Current Environment Details
+    # st.write(f"Databse Name - {session.get_current_database()}")
+    # st.write(f"WH Name - {session.get_current_warehouse()}")
+    analytics_main(session=session)
 
 
 if choose_side_opt == "Resource Allocation Efficiency":
