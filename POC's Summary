@@ -1,0 +1,33 @@
+
+Here are the steps to perform this POC in the descriptive way, have a look :-
+
+1. Setuping the Project Repo in the local machine through github.
+2. Create new environment from anaconda with python 3.8 version
+3. Installing necessary packages like snowflake, snowpark, python, pandas, pyarrow, streamlit.
+
+4. then moving ahead and executing first script file (audio2text_setup_code.ipynb) which is Audio to text setup code in which Whisper running 
+   in Snowpark Containers to transcribing the audio to text, extract duration, creating other object which is required in the process.
+5. But in this file we have to create role, grant permissions, creating warehouse, performing security integration and create compute pool    
+   but this compute pool is available only in paid version. so stuck in this because of this problem.
+
+6. After that we moving further execution with different file( audio2text_setup_onlyConversation.ipynb) which is Audio to text setup code only
+   conversation. 
+7. In this file we setup the role, create database, warehouse, schema, security integration, grant necessary permissions to the specifically 
+   created role and use the respective database, warehouse, role and schema.
+8. Then create session to maintain the connection with the snowflake using credentials file and creating the table "ALL_CLAIMS_RAW" and loading 
+   the data into this table.
+9. Then moving to next step and executing the next script file which is Audio Analytics script(AudioAnalytics.ipynb). In this file we import 
+   the necessary packages and their functions
+10. First of all we establish a connection and generate transcripts from the table "ALL_CLAIMS_RAW" and then grant cortex function
+    accessibility to that new role.
+11. then create stage in the UDF.
+12. next steps to create new tables and load data into it as per table specifications like first we create "AUDIO_CLAIMS_EXTRACTED_INFO", then 
+    create "StreamlitApp Table" which is created for text to SQL option. then create audio call embedding table in which store vector embedding
+    of the file and after creating all the table correctly so close the session.
+13. Now we moving to next steps where one is text to sql and other is streamlit app and in both the scripts first we need to create the docker  
+    image and build the docker image and push the image resgistry into snowflake image registry/ reposirtory. which is only accessible in the
+    paid version and some function like compute pool are also in the script to execute but only available in the paid version of snowflake 
+    account. 
+    
+So the final result is Database is created successfully in the snowflake but some fucntions are inaccessible in the trial account due to which this POC is not successfully completed into their end results.
+
