@@ -1,9 +1,10 @@
 {
-    "account": "",
-    "user": "",
-    "password": "",
-    "database": "",
-    "schema": "",
-    "warehouse": "",
+    "account": "dlerzmn-ep75567",
+    "user": "SufiCallCentre001",
+    "password": "AnuragKhullar97",
+    "database": "LLMDEMO",
+    "schema": "PUBLIC",
+    "warehouse": "SMALL_WAREHOUSE",
     "role":"SPCS_PSE_ROLE"
 }  
+
