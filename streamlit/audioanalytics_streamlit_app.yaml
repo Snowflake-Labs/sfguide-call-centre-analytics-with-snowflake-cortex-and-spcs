@@ -1,7 +1,7 @@
 spec:
   container:  
   - name: audioanalytics-app
-    image: sfseeurope-us-west-ccarrero-452.registry.snowflakecomputing.com/pr_llmdemo/public/images/streamlitapp:latest
+    image: ORGNAME-ACCTNAME.registry.snowflakecomputing.com/llmdemo/public/images/streamlitapp:latest
     env:
       SNOWFLAKE_WAREHOUSE: XS_WH
   endpoint:

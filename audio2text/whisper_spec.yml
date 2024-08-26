@@ -1,7 +1,7 @@
 spec:
   container:
   - name: audio-whisper-app
-    image: sfseeurope-us-west-ccarrero-452.registry.snowflakecomputing.com/pr_llmdemo/public/images/whisper-audio2text:latest
+    image: ORGNAME-ACCTNAME.registry.snowflakecomputing.com/llmdemo/public/images/whisper-audio2text:latest
     env:
       ASR_MODEL: base
       ASR_ENGINE: openai_whisper
