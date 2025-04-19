@@ -56,7 +56,7 @@ def chatbot(session:Session):
     model = st.selectbox("Hello, I'm the Snowflake Cortex Vehicle Insurance AI Assistant based on Llama v2. Please choose the model you'd like to use:", options = ['llama2-70b-chat','llama2-7b-chat'])
 
     def get_context(question):
-        sql_stmt = f''' with top_response as ( select AUDIO_DATA, vector_cosine_distance(ct_embedding ,SNOWFLAKE.CORTEX.embed_text('e5-base-v2',
+        sql_stmt = f''' with top_response as ( select AUDIO_DATA, vector_cosine_similarity(ct_embedding ,SNOWFLAKE.CORTEX.embed_text_768('e5-base-v2',
         '{question}')) as similarity from Audio_Call_Embedding 
         order by similarity desc limit 1) select AUDIO_DATA 
         from top_response;'''
@@ -65,7 +65,7 @@ def chatbot(session:Session):
         return df['AUDIO_DATA'][0]
 
     def get_df(question):
-        sql_stmt = f''' with top_response as ( select AUDIO_DATA, vector_cosine_distance(ct_embedding ,SNOWFLAKE.CORTEX.embed_text('e5-base-v2',
+        sql_stmt = f''' with top_response as ( select AUDIO_DATA, vector_cosine_similarity(ct_embedding ,SNOWFLAKE.CORTEX.embed_text_768('e5-base-v2',
         '{question}')) as similarity from Audio_Call_Embedding 
         order by similarity desc limit 3) 
         select AUDIO_DATA:AUDIOFILENAME::string as AudioFileName,AUDIO_DATA:CALLDATE::date as CallDate,AUDIO_DATA:CALLSENTIMENT::string  as Sentiment
