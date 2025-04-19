@@ -14,6 +14,7 @@ from snowflake.snowpark.types import DecimalType
 import plotly.graph_objects as go
 
 from src.functions import get_agent_call_duration,get_sentiment_ratio
+import pandas as pd
 
 
 
@@ -36,9 +37,9 @@ def main(session:Session):
     with d_col1:
         min_date = datetime.datetime(2023,11,1)
         # s_date = st.date_input("Start date", min_value=min_date, max_value=max_date,key='s_date')
-        s_date = st.date_input("Start date",  key='s_date')
+        s_date = st.date_input("Start date", value=datetime.date(2023, 10, 1), key='s_date')
     with d_col2:
-        e_date = st.date_input("End date",  key='e_date')
+        e_date = st.date_input("End date", key='e_date')
     # st.markdown('----')
     st.markdown('-----')
 
@@ -46,6 +47,19 @@ def main(session:Session):
     col1,col2=st.columns(2)
     # st.title("Cortex Call Centre Insurance Assistant")
     with col1:
+        df = load_data(get_agent_call_duration(s_date,e_date))
+        
+        # Create a title using st.subheader
+        st.subheader("Average Handle Time (AHT)")
+        
+        # Create a bar chart using native Streamlit component
+        chart_df = pd.DataFrame({
+            'Agent': df['AGENT'],
+            'Duration (mins)': df['TOTAL_DURATION_MINS']
+        }).set_index('Agent')
+        
+        st.bar_chart(chart_df, height=500)
+        """
         df= load_data(get_agent_call_duration(s_date,e_date))
 
         options = {
@@ -72,7 +86,77 @@ def main(session:Session):
         st_echarts(options=options, height="500px")
 
         # st.bar_chart(df)
+        """
+
     with col2:
+        df_ratio = load_data(get_sentiment_ratio(s_date, e_date))
+        
+        # Create a title using st.subheader for consistency
+        st.subheader("Sentiment Analysis by Month")
+        
+        # Create an improved plotly figure
+        fig = go.Figure()
+        
+        # Add traces with better colors and styling
+        fig.add_trace(go.Bar(
+            x=df_ratio['YEARMONTH'], 
+            y=df_ratio['POSITIVE_SENTIMENT_COUNT'],
+            name='Positive',
+            marker_color='#4CAF50',  # Green for positive
+            hovertemplate='<b>%{x}</b><br>Positive: %{y}<extra></extra>'
+        ))
+        
+        fig.add_trace(go.Bar(
+            x=df_ratio['YEARMONTH'], 
+            y=df_ratio['NEGATIVE_SENTIMENT_COUNT'],
+            name='Negative',
+            marker_color='#FF5252',  # Red for negative
+            hovertemplate='<b>%{x}</b><br>Negative: %{y}<extra></extra>'
+        ))
+        
+        # Clean up the layout with better proportions
+        fig.update_layout(
+            barmode='group',
+            height=500,
+            margin=dict(l=40, r=40, t=10, b=40),
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="center",
+                x=0.5
+            ),
+            xaxis_title="Month",
+            yaxis_title="Number of Calls",
+            hovermode="x",
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+        
+        # Add a helpful annotation or tooltip if data is limited
+        if len(df_ratio) <= 1:
+            fig.add_annotation(
+                text="Limited data available for selected date range",
+                showarrow=False,
+                xref="paper", yref="paper",
+                x=0.5, y=0.5,
+                font=dict(size=14)
+            )
+        
+        # Display the chart
+        st.plotly_chart(fig, use_container_width=True)
+        
+        # Optionally add insights beneath the chart
+        if not df_ratio.empty:
+            total_positive = df_ratio['POSITIVE_SENTIMENT_COUNT'].sum()
+            total_negative = df_ratio['NEGATIVE_SENTIMENT_COUNT'].sum()
+            total_calls = total_positive + total_negative
+            
+            if total_calls > 0:
+                positive_pct = (total_positive / total_calls) * 100
+                
+                st.caption(f"**Overview:** {int(total_calls)} total calls analyzed, "
+                        f"{positive_pct:.1f}% positive sentiment")
+        """
         df_ratio= load_data(get_sentiment_ratio(s_date,e_date))
 
         fig = go.Figure(data=[
@@ -110,6 +194,7 @@ def main(session:Session):
     )      
 
         st.plotly_chart(fig)
+        """
 
 
     st.markdown('-----')
