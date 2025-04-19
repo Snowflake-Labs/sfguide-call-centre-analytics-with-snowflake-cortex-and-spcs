@@ -1,1 +1,1 @@
-/Users/mcastro/Documents/github/sfc-gh-mcastro/sfguide-call-centre-analytics-with-snowflake-cortex-and-spcs/streamlit_app_snowcli/src/readme.md
+/Users/mcastro/Documents/github/sfc-gh-mcastro/sfguide-call-centre-analytics-with-snowflake-cortex-and-spcs/streamlit_sis/src/readme.md

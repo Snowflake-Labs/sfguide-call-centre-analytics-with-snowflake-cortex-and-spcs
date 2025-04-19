@@ -5,3 +5,4 @@ dependencies:
   - streamlit
   - snowflake-snowpark-python
   - plotly
+  - streamlit-echarts
