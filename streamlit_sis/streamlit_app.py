@@ -6,7 +6,7 @@ session = st.connection('snowflake').session()
 
 
 #st.set_page_config(page_title="My App",layout='wide')
-st.title("Customer Insight Analyzer ❄️")
+st.title("❄️ Customer Insight Analyzer ❄️ ")
 
 appinfo(session=session)
 
