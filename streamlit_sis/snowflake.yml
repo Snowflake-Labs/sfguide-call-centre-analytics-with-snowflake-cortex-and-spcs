@@ -1,0 +1,17 @@
+definition_version: '2'
+entities:
+  app:
+    type: streamlit
+    identifier:
+      name: app
+    main_file: streamlit_app.py
+    pages_dir: pages
+    query_warehouse: small_warehouse
+    stage: streamlit_stage
+    artifacts:
+      - streamlit_app.py
+      - environment.yml
+      - pages
+      - common/hello.py
+      - src
+
