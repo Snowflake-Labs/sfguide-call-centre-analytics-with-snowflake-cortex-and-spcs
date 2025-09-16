@@ -5,5 +5,6 @@
     "database": "",
     "schema": "",
     "warehouse": "",
-    "role":"SPCS_PSE_ROLE"
+    "role":"SPCS_PSE_ROLE",
+    "passcode_in_password":true
 }  
