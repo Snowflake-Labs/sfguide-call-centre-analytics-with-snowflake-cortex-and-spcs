@@ -61,35 +61,29 @@ def get_login_token():
 def get_connection_params():
 
   """
-  Construct Snowflake connection params from environment variables. 
-  There is an issue using cortex LLM fuctions with oauth token within streamlit. Hence changed connection mode to reading from json
+  Construct Snowflake connection params from environment variables.
+  Prefer OAuth pass-through when running in Snowflake containers; fallback to JSON config for local/dev.
   """
-  return json.load(open('./src/connection.json'))
-  # if os.path.isfile("/snowflake/session/token"):
-  #       creds = {
-  #           'host': os.getenv('SNOWFLAKE_HOST'),
-  #           'port': os.getenv('SNOWFLAKE_PORT'),
-  #           'protocol': "https",
-  #           'account': os.getenv('SNOWFLAKE_ACCOUNT'),
-  #           'authenticator': "oauth",
-  #           'token': open('/snowflake/session/token', 'r').read(),
-  #           'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
-  #           'database': os.getenv('SNOWFLAKE_DATABASE'),
-  #           'schema': os.getenv('SNOWFLAKE_SCHEMA'),
-  #           'client_session_keep_alive': True
-  #       }
-  # else:
-  #       creds = {
-  #           'account': os.getenv('SNOWFLAKE_ACCOUNT'),
-  #           'user': os.getenv('SNOWFLAKE_USER'),
-  #           'password': os.getenv('SNOWFLAKE_PASSWORD'),
-  #           'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
-  #           'database': os.getenv('SNOWFLAKE_DATABASE'),
-  #           'schema': os.getenv('SNOWFLAKE_SCHEMA'),
-  #           'client_session_keep_alive': True
-  #       }
-    
-    
+  token_path = "/snowflake/session/token"
+  if os.path.isfile(token_path):
+      creds = {
+          'account': os.getenv('SNOWFLAKE_ACCOUNT'),
+          'authenticator': 'oauth',
+          'token': get_login_token(),
+          'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
+          'database': os.getenv('SNOWFLAKE_DATABASE'),
+          'schema': os.getenv('SNOWFLAKE_SCHEMA'),
+          'role': os.getenv('SNOWFLAKE_ROLE'),
+          'client_session_keep_alive': True
+      }
+      host = os.getenv('SNOWFLAKE_HOST')
+      if host:
+          creds['host'] = host
+          creds['protocol'] = 'https'
+      return creds
+  else:
+      return json.load(open('./src/connection.json'))
+  
   # connection = snowflake.connector.connect(**creds)
   # return connection
     
@@ -120,15 +114,28 @@ def get_dates():
 
       
 with st.sidebar:
+    # Ensure sidebar uses theme colors via Streamlit CSS variables
+    st.markdown(
+        """
+        <style>
+        [data-testid="stSidebar"], [data-testid="stSidebar"] section {
+            background-color: var(--secondary-background-color) !important;
+        }
+        [data-testid="stSidebar"] * { color: var(--text-color) !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     #signup = st.button("Login")
     choose_side_opt = option_menu("Supervisor Dashboard", ["About App", "Audio Analytics","Resource Allocation Efficiency" ,"Chatbot","Text2SQLBot" ],
-                         icons=['browser-safari',  'card-checklist','card-checklist','card-checklist'],
+                         icons=['browser-safari',  'bar-chart','bar-chart','chat-dots','database'],
                          menu_icon="snow3", default_index=0,
                          styles={
-        "container": {"padding": "5!important", "background-color": "white","font-color": "#249dda"},
-        "icon": {"color": "#31c0e7", "font-size": "25px"}, 
-        "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "--hover-color": "white"},
-        "nav-link-selected": {"background-color": "7734f9"},
+        "container": {"padding": "6px", "background-color": "transparent", "border-radius": "8px"},
+        "icon": {"color": "var(--primary-color)", "font-size": "22px"}, 
+        "nav-link": {"font-size": "16px", "text-align": "left", "margin":"0px", "color": "var(--text-color)", "background-color": "transparent", "--hover-color": "var(--background-color)", "border-radius": "6px"},
+        "nav-link-selected": {"background-color": "var(--primary-color)", "color": "#FFFFFF", "font-weight": "600", "border-radius": "6px"},
     }
     )
 
